@@ -85,7 +85,23 @@ public class MyLinkedList<E> implements List<E> {
 
 	@Override
 	public void add(int index, E element) {
-		// TODO: fill this in
+		if (index < 0 || index > size) { // handle unsupported index case
+			throw new IndexOutOfBoundsException();
+		}
+		if (index == 0){
+			head = new Node(element, head);
+		}
+		else{
+			Node node = head;
+			int i = 0;
+			// loop until the appropriate node
+			while (i < index-1){
+				i++;
+				node = node.next;
+			}
+			node.next = new Node(element, node.next);
+		}
+		size++;
 	}
 
 	@Override
@@ -146,8 +162,20 @@ public class MyLinkedList<E> implements List<E> {
 
 	@Override
 	public int indexOf(Object target) {
-		// TODO: fill this in
-		return -1;
+		Node node = head;
+		int currentIndex = 0;
+		// while haven't found and haven't hit end, keep searching
+		while (node != null && !equals(node.cargo, target)){ 
+			node = node.next;
+			currentIndex++;
+		}
+		// if we haven't hit the end yet, we found it!
+		if (node != null){
+			return currentIndex;
+		}
+		else{
+			return -1; // if we hit the end, we failed.
+		}
 	}
 
 	/** Checks whether an element of the array is the target.
@@ -202,13 +230,40 @@ public class MyLinkedList<E> implements List<E> {
 	@Override
 	public boolean remove(Object obj) {
 		// TODO: fill this in
-		return false;
+		int removeFromIndex = indexOf(obj);
+		boolean removed = false;
+		if (removeFromIndex >= 0){
+			remove(removeFromIndex);
+			removed = true;
+		}
+		return removed;
 	}
 
 	@Override
 	public E remove(int index) {
-		// TODO: fill this in
-		return null;
+		if (index < 0 || index >= size) { // handle unsupported index case
+			throw new IndexOutOfBoundsException();
+		}
+		E removedCargo = null;
+		if (index == 0){
+			removedCargo = head.cargo;
+			head = head.next;
+		}
+		else{
+			Node node = head;
+			int i = 0;
+			Node prev = new Node();
+			// at end of this loop, 'node' is the one to delete
+			while (i < index){
+				i++;
+				prev = node;
+				node = node.next;
+			}
+			removedCargo = node.cargo;
+			prev.next = node.next;
+		}
+		size--;
+		return removedCargo;
 	}
 
 	@Override
